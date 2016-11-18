@@ -29,13 +29,6 @@ Tri_Tree<T>::Tri_Tree(const T &_value_a, const T &_value_b) : Tri_Tree()
 	flags = 3;
 }
 
-// Copy constructor (makes deep copy)
-template <class T>
-Tri_Tree<T>::Tri_Tree(const Tri_Tree<T>& tree) : Tri_Tree()
-{
-	insert(tree);
-}
-
 // Finds if a value exists in this tree
 template <class T>
 bool Tri_Tree<T>::find(const T &value) const
@@ -99,30 +92,30 @@ bool Tri_Tree<T>::insert(const T &value)
 template <class T>
 bool Tri_Tree<T>::insert(Tri_Tree<T>* tree)
 {
-	if (checkIfRepeat(tree)) insertTreeHelper(tree);
+	if (check_if_repeat(tree)) insert_tree_helper(tree);
 	return false;
 }
 
 // Inserts every element in a tree into this tree
 template <class T>
-void Tri_Tree<T>::insertTreeHelper(Tri_Tree<T>* tree)
+void Tri_Tree<T>::insert_tree_helper(Tri_Tree<T>* tree)
 {
-	if (tree->left) insertTreeHelper(tree->left);
-	if (tree->middle) insertTreeHelper(tree->middle);
-	if (tree->right) insertTreeHelper(tree->right);
+	if (tree->left) insert_tree_helper(tree->left);
+	if (tree->middle) insert_tree_helper(tree->middle);
+	if (tree->right) insert_tree_helper(tree->right);
 	if (tree->flags & 1) insert(tree->value_a);
 	if (tree->flags & 2) insert(tree->value_b);
 }
 
 // Returns true if no values in tree are equal to any values in this
 template <class T>
-bool Tri_Tree<T>::checkIfRepeat(Tri_Tree<T>* tree) const
+bool Tri_Tree<T>::check_if_repeat(Tri_Tree<T>* tree) const
 {
 	if ((tree->flags & 1) && find(tree->value_a)) return false;
 	if ((tree->flags & 2) && find(tree->value_b)) return false;
-	if (tree->left) return checkIfRepeat(tree->left);
-	if (tree->middle) return checkIfRepeat(tree->middle);
-	if (tree->right) return checkIfRepeat(tree->right);
+	if (tree->left) return check_if_repeat(tree->left);
+	if (tree->middle) return check_if_repeat(tree->middle);
+	if (tree->right) return check_if_repeat(tree->right);
 	return true;
 }
 
@@ -131,14 +124,16 @@ template <class T>
 bool Tri_Tree<T>::remove(const T& value)
 {
 	// check if value is in this node, remove it if so
+	// value_a
 	if ((flags & 1) && (value == value_a)) {
-		if (flags & 2) { flag = 0; return true; }
+		if (flags & 2) { flags = 0; return true; }
 		if (!left && !middle && !right) delete this;
 		repopulate(1);
 		return true;
 	}
+	// value_b
 	if ((flags & 2) && (value == value_b)) {
-		if (flags & 1) { flag = 0; return true; }
+		if (flags & 1) { flags = 0; return true; }
 		if (!left && !middle && !right) delete this;
 		repopulate(2);
 		return true;
@@ -166,10 +161,12 @@ bool Tri_Tree<T>::remove(const T& value)
 	return false;
 }
 
+// NEED WORK
 // Repopulates after a node is removed
 template <class T>
 void Tri_Tree<T>::repopulate(unsigned char remove_flag)
 {
+	/*
 	if (left) {
 		value = left->value;
 		left->repopulate();
@@ -177,67 +174,110 @@ void Tri_Tree<T>::repopulate(unsigned char remove_flag)
 		value = right->value;
 		right->repopulate();
 	}
-}
-
-// Prints out tree in order from left to right
-template <class T>
-void Tri_Tree<T>::displayHelper() const
-{
-	if (left) left->displayHelper();
-	cout << value << " ";
-	if (right) right->displayHelper();
+	*/
 }
 
 // Prints out this tree
 template <class T>
 void Tri_Tree<T>::display() const
 {
-	displayHelper();
+	display_helper();
 	cout << endl;
+}
+
+// Prints out tree in order from left to right
+template <class T>
+void Tri_Tree<T>::display_helper() const
+{
+	if (left) left->display_helper();
+	if (flags & 1) cout << value_a << ' ';
+	if (middle) middle->display_helper();
+	if (flags & 2) cout << value_b << ' ';
+	if (right) right->display_helper();
 }
 
 // Returns the pointer to the left Tri_Tree
 template <class T>
-Tri_Tree<T>* Tri_Tree<T>::getLeft() const
+Tri_Tree<T>* Tri_Tree<T>::get_left() const
 {
 	return left;
 }
 
+// Returns the pointer to the middle Tri_Tree
+template <class T>
+Tri_Tree<T>* Tri_Tree<T>::get_middle() const
+{
+	return middle;
+}
+
 // Returns the pointer to the right Tri_Tree
 template <class T>
-Tri_Tree<T>* Tri_Tree<T>::getRight() const
+Tri_Tree<T>* Tri_Tree<T>::get_right() const
 {
 	return right;
 }
 
-// Sets the value of the current tree to value
+// Gets the first value in this tree (value_a)
 template <class T>
-T Tri_Tree<T>::getContent() const
+T Tri_Tree<T>::get_value_a() const
 {
-	return value;
+	return value_a;
+}
+
+// Gets the second value in this tree (value_b)
+template <class T>
+T Tri_Tree<T>::get_value_b() const
+{
+	return value_b;
 }
 
 // Sets the left pointer to tree
 template <class T>
-void Tri_Tree<T>::setLeft(Tri_Tree<T>* tree)
+void Tri_Tree<T>::set_left(Tri_Tree<T>* tree)
 {
 	if (left) delete left;
 	left = tree;
 }
 
+// Sets the middle pointer to tree
+template <class T>
+void Tri_Tree<T>::set_middle(Tri_Tree<T>* tree)
+{
+	if (middle) delete middle;
+	middle = tree;
+}
+
 // Sets the right pointer to tree
 template <class T>
-void Tri_Tree<T>::setRight(Tri_Tree<T>* tree)
+void Tri_Tree<T>::set_right(Tri_Tree<T>* tree)
 {
 	if (right) delete right;
 	right = tree;
 }
 
-// Sets the value of the current tree to value
+// Sets the values of the current tree to _value_a and _value_b
 template <class T>
-void Tri_Tree<T>::setContent(const T &value)
+void Tri_Tree<T>::set_values(const T& _value_a, const T& _value_b)
 {
-	value = value;
+	value_a = _value_a;
+	value_b = _value_b;
+	flags = 3;
+}
+
+// Sets value_a of the current tree to value
+template <class T>
+void Tri_Tree<T>::set_value_a(const T& value)
+{
+	value_a = value;
+	flags |= 1;
+}
+
+// Sets value_b of the current tree to value
+template <class T>
+void Tri_Tree<T>::set_value_b(const T& value)
+{
+	value_b = value;
+	flags |= 2;
 }
 
 // Default destructor

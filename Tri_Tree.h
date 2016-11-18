@@ -1,17 +1,18 @@
-#ifndef _TriTree_H_
-#define _TriTree_H_
+#ifndef _Tri_Tree_H_
+#define _Tri_Tree_H_
 
 #include <iostream>
 #include <string>
 
 template <class T>
-class TriTree
+class Tri_Tree
 {
 	private:
 
 		// Values stored in this tree
 		T value_a;
 		T value_b;
+
 		// Flags for valid value
 		// (2 bits: bit 0 is value_a bit 1 is value_b)
 		unsigned char flags;
@@ -35,10 +36,7 @@ class TriTree
 		
 		// Value constructor with two values
 		Tri_Tree(const T &_value_a, const T &_value_b);
-		
-		// Copy constructor (makes deep copy)
-		Tri_Tree(const Tri_Tree<T>& tree);
-		
+
 		// Returns true if a value exists in this tree
 		bool find(const T& value) const;
 
@@ -58,33 +56,34 @@ class TriTree
 		Tri_Tree<T>* get_left() const;
 		Tri_Tree<T>* get_middle() const;
 		Tri_Tree<T>* get_right() const;
-		T getvalue_a() const;
-		T getvalue_b() const;
+		T get_value_a() const;
+		T get_value_b() const;
 
 		// Setters for left, middle, right, value_a, and value_b
 		void set_left(Tri_Tree<T>* tree);
 		void set_middle(Tri_Tree<T>* tree);
 		void set_right(Tri_Tree<T>* tree);
-		void setvalue_a(const T& value);
-		void setvalue_b(const T& value);
+		void set_values(const T& _value_a, const T& _value_b);
+		void set_value_a(const T& value);
+		void set_value_b(const T& value);
 		
 		// Default destructor
 		~Tri_Tree();
 
-	// Helper functions
+	// Private helper functions
 	private:
 
 		// Helper to insert a tree into this tree
-		void insertTreeHelper(Tri_Tree<T>* tree);
+		void insert_tree_helper(Tri_Tree<T>* tree);
 
 		// Checks if any value in a tree is present in this tree
-		bool checkIfRepeat(Tri_Tree<T>* tree) const;
+		bool check_if_repeat(Tri_Tree<T>* tree) const;
 
 		// Moves tree values to fill a removed value
-		void repopulate();
+		void repopulate(unsigned char remove_flag);
 
 		// Helper to print out values of this tree
-		void displayHelper() const;
+		void display_helper() const;
 };
 
 #endif
