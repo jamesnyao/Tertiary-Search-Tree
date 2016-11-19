@@ -210,18 +210,20 @@ bool Tri_Tree<T>::remove(const T& value)
 	return false;
 }
 
-// Repopulates after a node is removed
+// Repopulates after the last value is removed
 template <class T>
 void Tri_Tree<T>::repopulate(unsigned char remove_flag)
 {
 	if (remove_flag == 1) {
+		if (!left) flags &= 2;
 		if (left->flags & 2) {
 			value_a = left->value_b;
 			flags |= 1;
 			left->flags &= 1;
 			left->repopulate(2);
 		}
-	} else {
+	} else if (remove_flag == 2) {
+		if (!right) flags &= 1;
 		if (right->flags & 1) {
 			value_b = right->value_a;
 			flags |= 2;
