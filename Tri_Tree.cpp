@@ -33,15 +33,36 @@ Tri_Tree<T>::Tri_Tree(const T &_value_a, const T &_value_b) : Tri_Tree()
 template <class T>
 bool Tri_Tree<T>::find(const T &value) const
 {
-	if (value == value_a) return true;
-	if (value == value_b) return true;
-	if ((value < value_a) && left)
-		return left->find(value);
-	if (((value > value_a) && (value < value_b)) && middle)
-		return middle->find(value);
-	if ((value > value_b) && right)
-		return right->find(value);
-	return false;
+	if (flags == 3) {
+		if (value == value_a) return true;
+		if (value == value_b) return true;
+		if ((value < value_a) && left)
+			return left->find(value);
+		if (((value > value_a) && (value < value_b)) && middle)
+			return middle->find(value);
+		if ((value > value_b) && right)
+			return right->find(value);
+	} else if (flags == 2) {
+		if (value == value_b) return true;
+		if ((value < value_b) && (left && middle))
+			return left->find(value) || middle->find(value);
+		if ((value < value_b) && middle)
+			return middle->find(value);
+		if ((value < value_b) && left)
+			return left->find(value);
+		if ((value > value_b) && right)
+			return right->find(value);
+	} else if (flags == 1) {
+		if (value == value_a) return true;
+		if ((value > value_a) && (middle && right))
+			return middle->find(value) || right->find(value);
+		if ((value > value_a) && middle)
+			return middle->find(value);
+		if ((value > value_a) && right)
+			return right->find(value);
+		if ((value < value_a) && left)
+			return left->find(value);
+	} return false;
 }
 
 // Inserts a new value into the tree recursively
@@ -50,23 +71,45 @@ template <class T>
 bool Tri_Tree<T>::insert(const T &value)
 {
 	// if value repeats, deny the insert
-	if ((value == value_a) || (value == value_b)) return false;
+	if (((flags & 1) && (value == value_a)) || ((flags & 2) && (value == value_b))) return false;
 	
-	// check for open spots in this node
+	// Case were either value_a or value_b is empty
 	// value_a
-	if (!(flags & 1)) {
+	if (!(flags & 1) && (flags & 2)) {
+		if (value > value_b) return right->insert(value);
+		
+		// Check if value falls between the values in left and middle subtrees
+		// inserts into left subtree if value is too small (smaller than the values already in left subtree)
+		if (((left && middle) && !(((((left->flags == 3) || (left->flags == 2)) && (value > left->value_b)) || ((left->flags == 1) && (value > left->value_a))) && ((((middle->flags == 3) || (middle->flags == 1)) && (value < middle->value_a)) || ((middle->flags == 2) && (value < middle->value_b))))) || ((left) && !((((left->flags == 3) || (left->flags == 2)) && (value > left->value_b)) || ((left->flags == 1) && (value > left->value_a)))))
+			return left->insert(value);
+		// inserts into middle subtree if value is too large (larger than the values already in middle subtree)
+		if ((middle) && !((((middle->flags == 3) || (middle->flags == 1)) && (value < middle->value_a)) || ((middle->flags == 2) && (value < middle->value_b))))
+			return middle->insert(value);
+
+		// else set value_a to value
 		value_a = value;
 		flags |= 1;
 		return true;
 	}
 	// value_b
-	if (!(flags & 2)) {
+	if (!(flags & 2) && (flags & 1)) {
+		if (value < value_a) return left->insert(value);
+		
+		// Check if value falls between the values in right and middle subtrees
+		// inserts into right subtree if value is too large (larger than the values already in right subtree)
+		if (((right && middle) && !(((((right->flags == 3) || (right->flags == 1)) && (value < right->value_a)) || ((right->flags == 2) && (value < right->value_b))) && ((((middle->flags == 3) || (middle->flags == 2)) && (value > middle->value_b)) || ((middle->flags == 2) && (value > middle->value_a))))) || ((right) && !((((right->flags == 3) || (right->flags == 1)) && (value < right->value_a)) || ((right->flags == 2) && (value < right->value_b)))))
+			return right->insert(value);
+		// inserts into middle subtree if value is too small (smaller than the values already in middle subtree)
+		if ((middle) && !((((middle->flags == 3) || (middle->flags == 2)) && (value > middle->value_b)) || ((middle->flags == 2) && (value > middle->value_a))))
+			return middle->insert(value);
+
+		// else set value_b to value
 		value_b = value;
 		flags |= 2;
 		return true;
 	}
 
-	// if both values are full
+	// Case where both values are full
 	// left
 	if (value < value_a) {
 		if (!left) {
@@ -126,20 +169,26 @@ bool Tri_Tree<T>::remove(const T& value)
 	// check if value is in this node, remove it if so
 	// value_a
 	if ((flags & 1) && (value == value_a)) {
-		if (flags & 2) { flags = 0; return true; }
+		// if both value_a and value_b are valid
+		if (flags & 2) { flags = 0; return true; } 
+		// if only value_a is valid and there are no subtrees
 		if (!left && !middle && !right) delete this;
+		// otherwise remove value and repopulate the spot
 		repopulate(1);
 		return true;
 	}
 	// value_b
 	if ((flags & 2) && (value == value_b)) {
+		// if both value_a and value_b are valid
 		if (flags & 1) { flags = 0; return true; }
+		// if only value_a is valid and there are no subtrees
 		if (!left && !middle && !right) delete this;
+		// otherwise remove value and repopulate the spot
 		repopulate(2);
 		return true;
 	}
 
-	// value is not in this node, check below
+	// if value is not in this node, check subtrees
 	if (flags == 3) {
 		if ((value < value_a) && left)
 			return left->remove(value);
@@ -161,20 +210,25 @@ bool Tri_Tree<T>::remove(const T& value)
 	return false;
 }
 
-// NEED WORK
 // Repopulates after a node is removed
 template <class T>
 void Tri_Tree<T>::repopulate(unsigned char remove_flag)
 {
-	/*
-	if (left) {
-		value = left->value;
-		left->repopulate();
+	if (remove_flag == 1) {
+		if (left->flags & 2) {
+			value_a = left->value_b;
+			flags |= 1;
+			left->flags &= 1;
+			left->repopulate(2);
+		}
 	} else {
-		value = right->value;
-		right->repopulate();
+		if (right->flags & 1) {
+			value_b = right->value_a;
+			flags |= 2;
+			right->flags &= 2;
+			right->repopulate(1);
+		}
 	}
-	*/
 }
 
 // Prints out this tree
