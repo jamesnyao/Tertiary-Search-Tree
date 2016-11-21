@@ -222,34 +222,9 @@ bool Tri_Tree<T>::remove(const T& value)
 		}
 
 		// if value is not in this node, check subtrees
-		if (left->flags == 3) {
-			if ((value < left->value_a) && left->left)
-				return left->left->remove(value);
-			if (((value > left->value_a) && (value < left->value_b)) && left->middle)
-				return left->middle->remove(value);
-			if ((value > left->value_b) && left->right)
-				return left->right->remove(value);
-		} if (left->flags == 2) {
-			if ((left->left && left->middle) && (value < left->value_b))
-				return (left->left->remove(value) || left->middle->remove(value));
-			if (left->left && (value < left->value_b))
-				return left->left->remove(value);
-			if (left->middle && (value < left->value_b))
-				return left->middle->remove(value);
-			return left->right->remove(value);
-		} if (left->flags == 1) {
-			if ((left->middle && left->right) && (value > left->value_a))
-				return (left->middle->remove(value) || left->right->remove(value));
-			if (left->middle && (value > left->value_a))
-				return left->middle->remove(value);
-			if (left->right && (value > left->value_a))
-				return left->right->remove(value);
-			return left->left->remove(value);
-		} if (left->flags == 0) {
-			if (left->left && left->left->find(value)) return left->left->remove(value);
-			if (left->middle && left->middle->find(value)) return left->middle->remove(value);
-			if (left->right && left->right->find(value)) return left->right->remove(value);
-		}
+		if (left->left && left->left->find(value)) return left->left->remove(value);
+		if (left->middle && left->middle->find(value)) return left->middle->remove(value);
+		if (left->right && left->right->find(value)) return left->right->remove(value);
 
 	// check if value is in middle tree
 	} else if (middle && middle->find(value)) {
@@ -283,34 +258,9 @@ bool Tri_Tree<T>::remove(const T& value)
 		}
 
 		// if value is not in this node, check subtrees
-		if (middle->flags == 3) {
-			if ((value < middle->value_a) && middle->left)
-				return middle->left->remove(value);
-			if (((value > middle->value_a) && (value < middle->value_b)) && middle->middle)
-				return middle->middle->remove(value);
-			if ((value > middle->value_b) && middle->right)
-				return middle->right->remove(value);
-		} if (middle->flags == 2) {
-			if ((middle->left && middle->middle) && (value < middle->value_b))
-				return (middle->left->remove(value) || middle->middle->remove(value));
-			if (middle->left && (value < middle->value_b))
-				return middle->left->remove(value);
-			if (middle->middle && (value < middle->value_b))
-				return middle->middle->remove(value);
-			return middle->right->remove(value);
-		} if (middle->flags == 1) {
-			if ((middle->middle && middle->right) && (value > middle->value_a))
-				return (middle->middle->remove(value) || middle->right->remove(value));
-			if (middle->middle && (value > middle->value_a))
-				return middle->middle->remove(value);
-			if (middle->right && (value > middle->value_a))
-				return middle->right->remove(value);
-			return middle->left->remove(value);
-		} if (middle->flags == 0) {
-			if (middle->left && middle->left->find(value)) return middle->left->remove(value);
-			if (middle->middle && middle->middle->find(value)) return middle->middle->remove(value);
-			if (middle->right && middle->right->find(value)) return middle->right->remove(value);
-		}
+		if (middle->left && middle->left->find(value)) return middle->left->remove(value);
+		if (middle->middle && middle->middle->find(value)) return middle->middle->remove(value);
+		if (middle->right && middle->right->find(value)) return middle->right->remove(value);
 
 	// check if value is in right tree
 	} else if (right && right->find(value)) {
@@ -344,35 +294,10 @@ bool Tri_Tree<T>::remove(const T& value)
 		}
 
 		// if value is not in this node, check subtrees
-		if (right->flags == 3) {
-			if ((value < right->value_a) && right->left)
-				return right->left->remove(value);
-			if (((value > right->value_a) && (value < right->value_b)) && right->middle)
-				return right->middle->remove(value);
-			if ((value > right->value_b) && right->right)
-				return right->right->remove(value);
-		} if (right->flags == 2) {
-			if ((right->left && right->middle) && (value < right->value_b))
-				return (right->left->remove(value) || right->middle->remove(value));
-			if (right->left && (value < right->value_b))
-				return right->left->remove(value);
-			if (right->middle && (value < right->value_b))
-				return right->middle->remove(value);
-			return right->right->remove(value);
-		} if (right->flags == 1) {
-			if ((right->middle && right->right) && (value > right->value_a))
-				return (right->middle->remove(value) || right->right->remove(value));
-			if (right->middle && (value > right->value_a))
-				return right->middle->remove(value);
-			if (right->right && (value > right->value_a))
-				return right->right->remove(value);
-			return right->left->remove(value);
-		} if (right->flags == 0) {
-			if (right->left && right->left->find(value)) return right->left->remove(value);
-			if (right->middle && right->middle->find(value)) return right->middle->remove(value);
-			if (right->right && right->right->find(value)) return right->right->remove(value);
-		}
-
+		if (right->left && right->left->find(value)) return right->left->remove(value);
+		if (right->middle && right->middle->find(value)) return right->middle->remove(value);
+		if (right->right && right->right->find(value)) return right->right->remove(value);
+		
 	// nothing is removed
 	} else return false;
 }
