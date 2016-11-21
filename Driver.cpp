@@ -3,12 +3,13 @@
 #include "Tri_Tree.h"
 #include "BinarySearchTree.h"
 #include <ctime>
+
 using namespace std;
 
 #define BST BinarySearchTree
 
 // Change the number of iterations for the tests here
-#define TEST_ITERATIONS 50000
+#define TEST_ITERATIONS 20000
 
 // Print trees?
 #define PRINT_TREES 0
@@ -23,11 +24,11 @@ void timeval_print(string str, struct timeval *tv);
 // Running tests for balanced tree and unbalanced tree
 int main()
 {
-    struct timeval tvDIFF, tvStart, tvEnd;
-    srand(time(0));
+	struct timeval tvDIFF, tvStart, tvEnd;
+	srand(time(0));
 	// Testing with integers (balanced tree)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -51,7 +52,7 @@ int main()
 
 	// Testing with integers (unbalanced tree)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (TST unbalanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (unbalanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -71,10 +72,10 @@ int main()
 		timeval_print ("This took: ", &tvDIFF);
 
 		cout << "--------------------------------" << endl;
-    }
-    // Testing with integers (balanced tree BST)
+	}
+	// Testing with integers (balanced tree)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (BST balanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -98,7 +99,7 @@ int main()
 
 	// Testing with integers (unbalanced tree)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (BST unbalanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (unbalanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -119,22 +120,22 @@ int main()
 
 		cout << "--------------------------------" << endl;
 	}
-    return 0;
+	return 0;
 }
 
 // Calculates time difference
 int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1)
 {
-    long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
-    result->tv_sec = diff / 1000000;
-    result->tv_usec = diff % 1000000;
-    return (diff<0);
+	long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
+	result->tv_sec = diff / 1000000;
+	result->tv_usec = diff % 1000000;
+	return (diff<0);
 }
 
 // Prints time taken in seconds and micro seconds
 void timeval_print(string str, struct timeval *tv)
 {
 	cout << str;
-    printf("%ld sec, %06ld micro sec", tv->tv_sec, tv->tv_usec);
+	printf("%ld sec, %06ld micro sec", tv->tv_sec, tv->tv_usec);
 	cout << endl;
 }
