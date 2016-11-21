@@ -19,7 +19,7 @@ class Tri_Tree
 
 		// Pointer to left subtree
 		Tri_Tree<T>* left;
-		
+
 		// Pointer to middle subtree
 		Tri_Tree<T>* middle;
 
@@ -66,7 +66,10 @@ class Tri_Tree
 		void set_values(const T& _value_a, const T& _value_b);
 		void set_value_a(const T& value);
 		void set_value_b(const T& value);
-		
+
+		// debug print statement
+		void debug();
+
 		// Default destructor
 		~Tri_Tree();
 

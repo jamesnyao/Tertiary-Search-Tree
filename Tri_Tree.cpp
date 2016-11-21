@@ -62,6 +62,18 @@ bool Tri_Tree<T>::find(const T &value) const
 			return right->find(value);
 		if ((value < value_a) && left)
 			return left->find(value);
+	} else {
+		if (left && middle && right)
+			return (left->find(value) || middle->find(value) || right->find(value));
+		if (left && middle)
+			return (left->find(value) || middle->find(value));
+		if (middle && right)
+			return (middle->find(value) || right->find(value));
+		if (left && right)
+			return (left->find(value) || right->find(value));
+		if (left) return left->find(value);
+		if (middle) return middle->find(value);
+		if (right) return right->find(value);
 	} return false;
 }
 
@@ -71,13 +83,14 @@ template <class T>
 bool Tri_Tree<T>::insert(const T &value)
 {
 	// if value repeats, deny the insert
-	if (((flags & 1) && (value == value_a)) || ((flags & 2) && (value == value_b))) return false;
+	if (find(value)) return false;
 	
 	// Case were either value_a or value_b is empty
-	// value_a
-	if ((flags & 3) == 2) {
-		if ((right) && (value > value_b)) return right->insert(value);
-		
+	// value_a is empty
+	if (!(flags & 1)) {
+		if (right && (value > value_b)) return right->insert(value);
+		if (!right && (value > value_b)) return (right = new Tri_Tree<T>(value));
+
 		// Check if value falls between the values in left and middle subtrees
 		// inserts into left subtree if value is too small (smaller than the values already in left subtree)
 		if (((left && middle) && !(((((left->flags == 3) || (left->flags == 2)) && (value > left->value_b)) || ((left->flags == 1) && (value > left->value_a))) && ((((middle->flags == 3) || (middle->flags == 1)) && (value < middle->value_a)) || ((middle->flags == 2) && (value < middle->value_b))))) || ((left) && !((((left->flags == 3) || (left->flags == 2)) && (value > left->value_b)) || ((left->flags == 1) && (value > left->value_a)))))
@@ -85,15 +98,18 @@ bool Tri_Tree<T>::insert(const T &value)
 		// inserts into middle subtree if value is too large (larger than the values already in middle subtree)
 		if ((middle) && !((((middle->flags == 3) || (middle->flags == 1)) && (value < middle->value_a)) || ((middle->flags == 2) && (value < middle->value_b))))
 			return middle->insert(value);
+		
+		// if (!left && !middle) return (left = new Tri_Tree<T>(value));
 
 		// else set value_a to value
 		value_a = value;
 		flags |= 1;
 		return true;
 	}
-	// value_b
-	if ((flags & 2) == 1) {
-		if ((left) && (value < value_a)) return left->insert(value);
+	// value_b is empty
+	if (!(flags & 2)) {
+		if (left && (value < value_a)) return left->insert(value);
+		if (!left && (value < value_a)) return (left = new Tri_Tree<T>(value));
 		
 		// Check if value falls between the values in right and middle subtrees
 		// inserts into right subtree if value is too large (larger than the values already in right subtree)
@@ -102,33 +118,33 @@ bool Tri_Tree<T>::insert(const T &value)
 		// inserts into middle subtree if value is too small (smaller than the values already in middle subtree)
 		if ((middle) && !((((middle->flags == 3) || (middle->flags == 2)) && (value > middle->value_b)) || ((middle->flags == 2) && (value > middle->value_a))))
 			return middle->insert(value);
+		
+		// if (!right && !middle) return (right = new Tri_Tree<T>(value));
 
 		// else set value_b to value
 		value_b = value;
 		flags |= 2;
 		return true;
 	}
+	
+	if (flags == 0) {
+		
+	}
 
 	// Case where both values are full
 	// left
 	if (value < value_a) {
-		if (!left) {
-			left = new Tri_Tree<T>(value);
-			return true;
-		} return left->insert(value);
+		if (!left) return (left = new Tri_Tree<T>(value));
+		return left->insert(value);
 	}
 	// right
 	if (value > value_b) {
-		if (!right) {
-			right = new Tri_Tree<T>(value);
-			return true;
-		} return right->insert(value);
+		if (!right) return (right = new Tri_Tree<T>(value));
+		return right->insert(value);
 	}
 	// middle
-	if (!middle) {
-		middle = new Tri_Tree<T>(value);
-		return true;
-	} return middle->insert(value);
+	if (!middle) return (middle = new Tri_Tree<T>(value));
+	return middle->insert(value);
 }
 
 // Combine the values of a tree into this tree
@@ -167,6 +183,12 @@ template <class T>
 bool Tri_Tree<T>::remove(const T& value)
 {
 	// check if value is in this node, remove it if so
+	if ((flags & 3) && (value == value_a)) { flags = 2; return true; }
+	if ((flags & 3) && (value == value_b)) { flags = 1; return true; }
+	if ((!left && !middle && !right) && (((flags & 1) && (value == value_a)) || ((flags & 2) && (value == value_b)))) { flags = 0; return true; }
+	if ((flags & 1) && (value == value_a)) { repopulate(1); return true; }
+	if ((flags & 2) && (value == value_b)) { repopulate(2); return true; }
+	
 	
 	// check if value is in left tree
 	if (left && left->find(value)) {
@@ -181,7 +203,7 @@ bool Tri_Tree<T>::remove(const T& value)
 				return true;
 			}
 			// otherwise remove value and repopulate the spot
-			left->repopulate(1);
+			left->flags &= 1;
 			return true;
 		}
 		// value_b
@@ -195,7 +217,7 @@ bool Tri_Tree<T>::remove(const T& value)
 				return true;
 			}
 			// otherwise remove value and repopulate the spot
-			left->repopulate(2);
+			left->flags &= 1;
 			return true;
 		}
 
@@ -238,7 +260,7 @@ bool Tri_Tree<T>::remove(const T& value)
 				return true;
 			}
 			// otherwise remove value and repopulate the spot
-			middle->repopulate(1);
+			middle->flags &= 2;
 			return true;
 		}
 		// value_b
@@ -252,7 +274,7 @@ bool Tri_Tree<T>::remove(const T& value)
 				return true;
 			}
 			// otherwise remove value and repopulate the spot
-			middle->repopulate(2);
+			middle->flags &= 1;
 			return true;
 		}
 
@@ -295,7 +317,7 @@ bool Tri_Tree<T>::remove(const T& value)
 				return true;
 			}
 			// otherwise remove value and repopulate the spot
-			right->repopulate(1);
+			right->flags &= 2;
 			return true;
 		}
 		// value_b
@@ -309,7 +331,7 @@ bool Tri_Tree<T>::remove(const T& value)
 				return true;
 			}
 			// otherwise remove value and repopulate the spot
-			right->repopulate(2);
+			right->flags &= 1;
 			return true;
 		}
 
@@ -497,11 +519,18 @@ void Tri_Tree<T>::set_value_b(const T& value)
 	flags |= 2;
 }
 
+template <class T>
+void Tri_Tree<T>::debug()
+{
+	cout << "FLAGS: " << (int)flags << " VALUE_A: " << value_a << " VALUE_B: " << value_b << endl;
+}
+
 // Default destructor
 template <class T>
 Tri_Tree<T>::~Tri_Tree<T>()
 {
 	if (left) delete left;
+	if (middle) delete middle;
 	if (right) delete right;
 }
 
