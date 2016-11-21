@@ -1,8 +1,11 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include "Tri_Tree.h"
-
+#include "BinarySearchTree.h"
+#include <ctime>
 using namespace std;
+
+#define BST BinarySearchTree
 
 // Change the number of iterations for the tests here
 #define TEST_ITERATIONS 20000
@@ -21,7 +24,7 @@ void timeval_print(string str, struct timeval *tv);
 int main()
 {
     struct timeval tvDIFF, tvStart, tvEnd;
-
+    srand(time(0));
 	// Testing with integers (balanced tree)
 	{
 		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
@@ -68,8 +71,54 @@ int main()
 		timeval_print ("This took: ", &tvDIFF);
 
 		cout << "--------------------------------" << endl;
+    }
+    // Testing with integers (balanced tree)
+	{
+		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
+
+		// Start timer
+		gettimeofday(&tvStart, NULL);
+		cout << "Timer start" << endl << endl;
+
+		// Make tree
+		BST<int>* tree = new BST<int>(500000);
+		for (unsigned int i = 0; i < TEST_ITERATIONS; i++) tree->insert(rand() % 1000000);
+
+		if (PRINT_TREES) tree->display();
+
+		// Stop timer
+		gettimeofday(&tvEnd, NULL);
+		cout << "Timer end" << endl << endl;
+
+		timeval_subtract(&tvDIFF, &tvEnd, &tvStart);
+		timeval_print ("This took: ", &tvDIFF);
+
+		cout << "--------------------------------" << endl;
 	}
 
+	// Testing with integers (unbalanced tree)
+	{
+		cout << "Testing " << TEST_ITERATIONS << " integers (unbalanced tree):" << endl << endl;
+
+		// Start timer
+		gettimeofday(&tvStart, NULL);
+		cout << "Timer start" << endl << endl;
+
+		// Make tree
+		BST<int>* tree = new BST<int>(1);
+		for (int i = 0; i < TEST_ITERATIONS; i++) tree->insert(i+2);
+
+		if (PRINT_TREES) tree->display();
+
+		// Stop timer
+		gettimeofday(&tvEnd, NULL);
+		cout << "Timer end" << endl << endl;
+
+		timeval_subtract(&tvDIFF, &tvEnd, &tvStart);
+		timeval_print ("This took: ", &tvDIFF);
+
+		cout << "--------------------------------" << endl;
+	}
     return 0;
 }
 
