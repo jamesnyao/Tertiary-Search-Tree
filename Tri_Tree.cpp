@@ -167,55 +167,180 @@ template <class T>
 bool Tri_Tree<T>::remove(const T& value)
 {
 	// check if value is in this node, remove it if so
-	// value_a
-	if ((flags & 1) && (value == value_a)) {
-		// if both value_a and value_b are valid
-		if (flags & 2) { flags = 2; return true; }
-		// if only value_a is valid and there are no subtrees
-		if (!left && !middle && !right) { delete this; return true; }
-		// otherwise remove value and repopulate the spot
-		repopulate(1);
-		return true;
-	}
-	// value_b
-	if ((flags & 2) && (value == value_b)) {
-		// if both value_a and value_b are valid
-		if (flags & 1) { flags = 1; return true; }
-		// if only value_a is valid and there are no subtrees
-		if (!left && !middle && !right) { delete this; return true; }
-		// otherwise remove value and repopulate the spot
-		repopulate(2);
-		return true;
-	}
+	
+	// check if value is in left tree
+	if (left && left->find(value)) {
+		// value_a
+		if ((left->flags & 1) && (value == left->value_a)) {
+			// if both value_a and value_b are valid
+			if (left->flags & 2) { left->flags = 2; return true; }
+			// if only value_a is valid and there are no subtrees
+			if (!left->left && !left->middle && !left->right) {
+				delete left;
+				left = nullptr;
+				return true;
+			}
+			// otherwise remove value and repopulate the spot
+			left->repopulate(1);
+			return true;
+		}
+		// value_b
+		if ((left->flags & 2) && (value == left->value_b)) {
+			// if both value_a and value_b are valid
+			if (left->flags & 1) { left->flags = 1; return true; }
+			// if only value_a is valid and there are no subtrees
+			if (!left->left && !left->middle && !left->right) {
+				delete left;
+				left = nullptr;
+				return true;
+			}
+			// otherwise remove value and repopulate the spot
+			left->repopulate(2);
+			return true;
+		}
 
-	// if value is not in this node, check subtrees
-	if (flags == 3) {
-		if ((value < value_a) && left)
-			return left->remove(value);
-		if (((value > value_a) && (value < value_b)) && middle)
-			return middle->remove(value);
-		if ((value > value_b) && right)
-			return right->remove(value);
-	} if (flags == 2) {
-		if ((left && middle) && (value < value_b))
-			return (left->remove(value) || middle->remove(value));
-		if (left && (value < value_b))
-			return left->remove(value);
-		if (middle && (value < value_b))
-			return middle->remove(value);
-		return right->remove(value);
-	} if (flags == 1) {
-		if ((middle && right) && (value > value_a))
-			return (middle->remove(value) || right->remove(value));
-		if (middle && (value > value_a))
-			return middle->remove(value);
-		if (right && (value > value_a))
-			return right->remove(value);
-		return left->remove(value);
-	}
+		// if value is not in this node, check subtrees
+		if (left->flags == 3) {
+			if ((value < left->value_a) && left->left)
+				return left->left->remove(value);
+			if (((value > left->value_a) && (value < left->value_b)) && left->middle)
+				return left->middle->remove(value);
+			if ((value > left->value_b) && left->right)
+				return left->right->remove(value);
+		} if (left->flags == 2) {
+			if ((left->left && left->middle) && (value < left->value_b))
+				return (left->left->remove(value) || left->middle->remove(value));
+			if (left->left && (value < left->value_b))
+				return left->left->remove(value);
+			if (left->middle && (value < left->value_b))
+				return left->middle->remove(value);
+			return left->right->remove(value);
+		} if (left->flags == 1) {
+			if ((left->middle && left->right) && (value > left->value_a))
+				return (left->middle->remove(value) || left->right->remove(value));
+			if (left->middle && (value > left->value_a))
+				return left->middle->remove(value);
+			if (left->right && (value > left->value_a))
+				return left->right->remove(value);
+			return left->left->remove(value);
+		}
+
+	// check if value is in middle tree
+	} else if (middle && middle->find(value)) {
+		// value_a
+		if ((middle->flags & 1) && (value == middle->value_a)) {
+			// if both value_a and value_b are valid
+			if (middle->flags & 2) { middle->flags = 2; return true; }
+			// if only value_a is valid and there are no subtrees
+			if (!middle->left && !middle->middle && !middle->right) {
+				delete middle;
+				middle = nullptr;
+				return true;
+			}
+			// otherwise remove value and repopulate the spot
+			middle->repopulate(1);
+			return true;
+		}
+		// value_b
+		if ((middle->flags & 2) && (value == middle->value_b)) {
+			// if both value_a and value_b are valid
+			if (middle->flags & 1) { middle->flags = 1; return true; }
+			// if only value_a is valid and there are no subtrees
+			if (!middle->left && !middle->middle && !middle->right) {
+				delete middle;
+				middle = nullptr;
+				return true;
+			}
+			// otherwise remove value and repopulate the spot
+			middle->repopulate(2);
+			return true;
+		}
+
+		// if value is not in this node, check subtrees
+		if (middle->flags == 3) {
+			if ((value < middle->value_a) && middle->left)
+				return middle->left->remove(value);
+			if (((value > middle->value_a) && (value < middle->value_b)) && middle->middle)
+				return middle->middle->remove(value);
+			if ((value > middle->value_b) && middle->right)
+				return middle->right->remove(value);
+		} if (middle->flags == 2) {
+			if ((middle->left && middle->middle) && (value < middle->value_b))
+				return (middle->left->remove(value) || middle->middle->remove(value));
+			if (middle->left && (value < middle->value_b))
+				return middle->left->remove(value);
+			if (middle->middle && (value < middle->value_b))
+				return middle->middle->remove(value);
+			return middle->right->remove(value);
+		} if (middle->flags == 1) {
+			if ((middle->middle && middle->right) && (value > middle->value_a))
+				return (middle->middle->remove(value) || middle->right->remove(value));
+			if (middle->middle && (value > middle->value_a))
+				return middle->middle->remove(value);
+			if (middle->right && (value > middle->value_a))
+				return middle->right->remove(value);
+			return middle->left->remove(value);
+		}
+
+	// check if value is in right tree
+	} else if (right && right->find(value)) {
+		// value_a
+		if ((right->flags & 1) && (value == right->value_a)) {
+			// if both value_a and value_b are valid
+			if (right->flags & 2) { right->flags = 2; return true; }
+			// if only value_a is valid and there are no subtrees
+			if (!right->left && !right->middle && !right->right) {
+				delete right;
+				right = nullptr;
+				return true;
+			}
+			// otherwise remove value and repopulate the spot
+			right->repopulate(1);
+			return true;
+		}
+		// value_b
+		if ((right->flags & 2) && (value == right->value_b)) {
+			// if both value_a and value_b are valid
+			if (right->flags & 1) { right->flags = 1; return true; }
+			// if only value_a is valid and there are no subtrees
+			if (!right->left && !right->middle && !right->right) {
+				delete right;
+				right = nullptr;
+				return true;
+			}
+			// otherwise remove value and repopulate the spot
+			right->repopulate(2);
+			return true;
+		}
+
+		// if value is not in this node, check subtrees
+		if (right->flags == 3) {
+			if ((value < right->value_a) && right->left)
+				return right->left->remove(value);
+			if (((value > right->value_a) && (value < right->value_b)) && right->middle)
+				return right->middle->remove(value);
+			if ((value > right->value_b) && right->right)
+				return right->right->remove(value);
+		} if (right->flags == 2) {
+			if ((right->left && right->middle) && (value < right->value_b))
+				return (right->left->remove(value) || right->middle->remove(value));
+			if (right->left && (value < right->value_b))
+				return right->left->remove(value);
+			if (right->middle && (value < right->value_b))
+				return right->middle->remove(value);
+			return right->right->remove(value);
+		} if (right->flags == 1) {
+			if ((right->middle && right->right) && (value > right->value_a))
+				return (right->middle->remove(value) || right->right->remove(value));
+			if (right->middle && (value > right->value_a))
+				return right->middle->remove(value);
+			if (right->right && (value > right->value_a))
+				return right->right->remove(value);
+			return right->left->remove(value);
+		}
 
 	// nothing is removed
-	return false;
+	} else return false;
 }
 
 // Repopulates after the last value is removed
