@@ -197,12 +197,20 @@ bool Tri_Tree<T>::remove(const T& value)
 		if ((value > value_b) && right)
 			return right->remove(value);
 	} if (flags == 2) {
-		if (value < value_b)
-			return left->remove(value) || middle->remove(value);
+		if ((left && middle) && (value < value_b))
+			return (left->remove(value) || middle->remove(value));
+		if (left && (value < value_b))
+			return left->remove(value);
+		if (middle && (value < value_b))
+			return middle->remove(value);
 		return right->remove(value);
 	} if (flags == 1) {
-		if (value > value_a)
-			return middle->remove(value) || right->remove(value);
+		if ((middle && right) && (value > value_a))
+			return (middle->remove(value) || right->remove(value));
+		if (middle && (value > value_a))
+			return middle->remove(value);
+		if (right && (value > value_a))
+			return right->remove(value);
 		return left->remove(value);
 	}
 
