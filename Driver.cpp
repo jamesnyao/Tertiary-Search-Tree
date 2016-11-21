@@ -25,11 +25,13 @@ void timeval_print(string str, struct timeval *tv);
 int main()
 {
 	struct timeval tvDIFF, tvStart, tvEnd;
+	unsigned i;
 	srand(time(0));
+
 	// Testing with integers (balanced tree)
 	{
-        int values[TEST_ITERATIONS + 2];
-	    cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
+		int values[TEST_ITERATIONS];
+		cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -37,10 +39,10 @@ int main()
 
 		// Make tree
 		Tri_Tree<int>* tree = new Tri_Tree<int>(300000, 700000);
-		for (unsigned int i = 0; i < TEST_ITERATIONS; i++){
-            values[i] = rand() % 1000000;
-            tree->insert(values[i]);
-        }
+		for (i = 0; i < TEST_ITERATIONS; i++){
+			values[i] = (rand() % 1000000);
+			tree->insert(values[i]);
+		}
 
 		if (PRINT_TREES) tree->display();
 
@@ -53,27 +55,31 @@ int main()
 
 		cout << "--------------------------------" << endl;
 
-	    // TESTING REMOVE
-		{
-			cout << "Testing " << TEST_ITERATIONS << " removals (TST balanced tree):" << endl << endl;
-			gettimeofday(&tvStart, NULL);
-			cout << "Timer start" << endl << endl;
-            if(PRINT_TREES) cout << "Before: "; tree->display();
-            cout << "Delete: ";
-			for(int i = 0; i < TEST_ITERATIONS; i++){
-                cout << values[i] << " ";
-				tree->remove(values[i]);
-			}
-            cout << endl;
-            //tree->remove(300000);
-			if(PRINT_TREES) cout << "After: "; tree->display();
-			gettimeofday(&tvEnd, NULL);
-			cout << "Timer stop" << endl << endl;
-			timeval_subtract(&tvDIFF, &tvEnd, &tvStart);
-			timeval_print("This took: ", &tvDIFF);
-			cout << "--------------------------------" << endl;
-		}
+		// TESTING REMOVE
+		cout << "Testing " << TEST_ITERATIONS << " removals (TST balanced tree):" << endl << endl;
+		gettimeofday(&tvStart, NULL);
+		cout << "Timer start" << endl << endl;
+
+		if (PRINT_TREES) cout << "Before: ";
+		tree->display();
+
+		cout << "Delete: ";
+		for (i = 0; i < TEST_ITERATIONS; i++){
+			cout << values[i] << ' ';
+			tree->remove(values[i]);
+		} cout << endl;
+
+		//tree->remove(300000);
+		if (PRINT_TREES) cout << "After: ";
+		tree->display();
+
+		gettimeofday(&tvEnd, NULL);
+		cout << "Timer stop" << endl << endl;
+		timeval_subtract(&tvDIFF, &tvEnd, &tvStart);
+		timeval_print("This took: ", &tvDIFF);
+		cout << "--------------------------------" << endl;
 	}
+
 
 	// Testing with integers (unbalanced tree)
 	{
