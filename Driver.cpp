@@ -8,7 +8,7 @@ using namespace std;
 #define BST BinarySearchTree
 
 // Change the number of iterations for the tests here
-#define TEST_ITERATIONS 20000
+#define TEST_ITERATIONS 50000
 
 // Print trees?
 #define PRINT_TREES 0
@@ -27,7 +27,7 @@ int main()
     srand(time(0));
 	// Testing with integers (balanced tree)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -51,7 +51,7 @@ int main()
 
 	// Testing with integers (unbalanced tree)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (unbalanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (TST unbalanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -72,9 +72,9 @@ int main()
 
 		cout << "--------------------------------" << endl;
     }
-    // Testing with integers (balanced tree)
+    // Testing with integers (balanced tree BST)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (BST balanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -98,7 +98,7 @@ int main()
 
 	// Testing with integers (unbalanced tree)
 	{
-		cout << "Testing " << TEST_ITERATIONS << " integers (unbalanced tree):" << endl << endl;
+		cout << "Testing " << TEST_ITERATIONS << " integers (BST unbalanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
