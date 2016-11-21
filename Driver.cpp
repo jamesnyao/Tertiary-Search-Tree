@@ -28,11 +28,7 @@ int main()
 	srand(time(0));
 	// Testing with integers (balanced tree)
 	{
-<<<<<<< HEAD
-	cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
-=======
-		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
->>>>>>> 23e2e0b4fedf1c8d554880b3c0d06f8b0bfe1aa4
+	    cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -93,11 +89,8 @@ int main()
 
 		cout << "--------------------------------" << endl;
 	}
-<<<<<<< HEAD
+
 	// Testing with integers (balanced tree BST)
-=======
-	// Testing with integers (balanced tree)
->>>>>>> 23e2e0b4fedf1c8d554880b3c0d06f8b0bfe1aa4
 	{
 		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
 
