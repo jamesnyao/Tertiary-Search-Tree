@@ -183,11 +183,11 @@ template <class T>
 bool Tri_Tree<T>::remove(const T& value)
 {
 	// check if value is in this node, remove it if so
-	if ((flags & 3) && (value == value_a)) { flags = 2; return true; }
-	if ((flags & 3) && (value == value_b)) { flags = 1; return true; }
-	if ((!left && !middle && !right) && (((flags & 1) && (value == value_a)) || ((flags & 2) && (value == value_b)))) { flags = 0; return true; }
-	if ((flags & 1) && (value == value_a)) { repopulate(1); return true; }
-	if ((flags & 2) && (value == value_b)) { repopulate(2); return true; }
+	if ((flags & 1) && (value == value_a)) { flags &= 2; return true; }
+	if ((flags & 2) && (value == value_b)) { flags &= 1; return true; }
+	// if ((!left && !middle && !right) && (((flags & 1) && (value == value_a)) || ((flags & 2) && (value == value_b)))) { flags = 0; return true; }
+	// if ((flags & 1) && (value == value_a)) { repopulate(1); return true; }
+	// if ((flags & 2) && (value == value_b)) { repopulate(2); return true; }
 	
 	
 	// check if value is in left tree
@@ -245,6 +245,10 @@ bool Tri_Tree<T>::remove(const T& value)
 			if (left->right && (value > left->value_a))
 				return left->right->remove(value);
 			return left->left->remove(value);
+		} if (left->flags == 0) {
+			if (left->left && left->left->find(value)) return left->left->remove(value);
+			if (left->middle && left->middle->find(value)) return left->middle->remove(value);
+			if (left->right && left->right->find(value)) return left->right->remove(value);
 		}
 
 	// check if value is in middle tree
@@ -302,6 +306,10 @@ bool Tri_Tree<T>::remove(const T& value)
 			if (middle->right && (value > middle->value_a))
 				return middle->right->remove(value);
 			return middle->left->remove(value);
+		} if (middle->flags == 0) {
+			if (middle->left && middle->left->find(value)) return middle->left->remove(value);
+			if (middle->middle && middle->middle->find(value)) return middle->middle->remove(value);
+			if (middle->right && middle->right->find(value)) return middle->right->remove(value);
 		}
 
 	// check if value is in right tree
@@ -359,6 +367,10 @@ bool Tri_Tree<T>::remove(const T& value)
 			if (right->right && (value > right->value_a))
 				return right->right->remove(value);
 			return right->left->remove(value);
+		} if (right->flags == 0) {
+			if (right->left && right->left->find(value)) return right->left->remove(value);
+			if (right->middle && right->middle->find(value)) return right->middle->remove(value);
+			if (right->right && right->right->find(value)) return right->right->remove(value);
 		}
 
 	// nothing is removed
@@ -517,6 +529,33 @@ void Tri_Tree<T>::set_value_b(const T& value)
 {
 	value_b = value;
 	flags |= 2;
+}
+
+// Deletes the values of the current tree
+template <class T>
+bool Tri_Tree<T>::del_values()
+{
+	if (!flags) return false;
+	flags = 0;
+	return true;
+}
+
+// Deletes value_a of the current tree
+template <class T>
+bool Tri_Tree<T>::del_value_a()
+{
+	if (!(flags & 1)) return false; 
+	flags &= 2;
+	return true;
+}
+
+// Deletes value_b of the current tree
+template <class T>
+bool Tri_Tree<T>::del_value_b()
+{
+	if (!(flags & 2)) return false;
+	flags &= 1;
+	return true;
 }
 
 template <class T>

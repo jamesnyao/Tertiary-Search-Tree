@@ -66,6 +66,11 @@ class Tri_Tree
 		void set_values(const T& _value_a, const T& _value_b);
 		void set_value_a(const T& value);
 		void set_value_b(const T& value);
+		
+		// Deletes values in this tree
+		bool del_values();
+		bool del_value_a();
+		bool del_value_b();
 
 		// debug print statement
 		void debug();
