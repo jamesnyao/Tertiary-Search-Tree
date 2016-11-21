@@ -28,6 +28,7 @@ int main()
 	srand(time(0));
 	// Testing with integers (balanced tree)
 	{
+        int values[TEST_ITERATIONS + 2];
 	    cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
 
 		// Start timer
@@ -36,7 +37,10 @@ int main()
 
 		// Make tree
 		Tri_Tree<int>* tree = new Tri_Tree<int>(300000, 700000);
-		for (unsigned int i = 0; i < TEST_ITERATIONS; i++) tree->insert(rand() % 1000000);
+		for (unsigned int i = 0; i < TEST_ITERATIONS; i++){
+            values[i] = rand() % 1000000;
+            tree->insert(values[i]);
+        }
 
 		if (PRINT_TREES) tree->display();
 
@@ -55,10 +59,13 @@ int main()
 			gettimeofday(&tvStart, NULL);
 			cout << "Timer start" << endl << endl;
             if(PRINT_TREES) cout << "Before: "; tree->display();
+            cout << "Delete: ";
 			for(int i = 0; i < TEST_ITERATIONS; i++){
-				tree->remove(rand() % 1000000);
+                cout << values[i] << " ";
+				tree->remove(values[i]);
 			}
-            tree->remove(300000);
+            cout << endl;
+            //tree->remove(300000);
 			if(PRINT_TREES) cout << "After: "; tree->display();
 			gettimeofday(&tvEnd, NULL);
 			cout << "Timer stop" << endl << endl;
