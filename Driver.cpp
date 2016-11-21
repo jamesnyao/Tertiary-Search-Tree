@@ -9,7 +9,7 @@ using namespace std;
 #define BST BinarySearchTree
 
 // Change the number of iterations for the tests here
-#define TEST_ITERATIONS 20000
+#define TEST_ITERATIONS 20
 
 // Print trees?
 #define PRINT_TREES 0
@@ -49,14 +49,17 @@ int main()
 
 		cout << "--------------------------------" << endl;
 
-	// TESTING REMOVE
+	    // TESTING REMOVE
 		{
 			cout << "Testing " << TEST_ITERATIONS/2 << " removals (TST balanced tree):" << endl << endl;
 			gettimeofday(&tvStart, NULL);
 			cout << "Timer start" << endl << endl;
+            tree->display();
+            /*
 			for(int i = 0; i < TEST_ITERATIONS/2; i++){
 				tree->remove(rand() % 1000000);
-			}
+			}*/
+            tree->remove(300000);
 			if(PRINT_TREES) tree->display();
 			gettimeofday(&tvEnd, NULL);
 			cout << "Timer stop" << endl << endl;
