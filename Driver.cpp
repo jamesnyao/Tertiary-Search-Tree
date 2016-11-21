@@ -12,7 +12,7 @@ using namespace std;
 #define TEST_ITERATIONS 20
 
 // Print trees?
-#define PRINT_TREES 0
+#define PRINT_TREES 1
 
 // Calculates time difference
 int timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1);
@@ -51,16 +51,15 @@ int main()
 
 	    // TESTING REMOVE
 		{
-			cout << "Testing " << TEST_ITERATIONS/2 << " removals (TST balanced tree):" << endl << endl;
+			cout << "Testing " << TEST_ITERATIONS << " removals (TST balanced tree):" << endl << endl;
 			gettimeofday(&tvStart, NULL);
 			cout << "Timer start" << endl << endl;
-            tree->display();
-            /*
-			for(int i = 0; i < TEST_ITERATIONS/2; i++){
+            if(PRINT_TREES) cout << "Before: "; tree->display();
+			for(int i = 0; i < TEST_ITERATIONS; i++){
 				tree->remove(rand() % 1000000);
-			}*/
+			}
             tree->remove(300000);
-			if(PRINT_TREES) tree->display();
+			if(PRINT_TREES) cout << "After: "; tree->display();
 			gettimeofday(&tvEnd, NULL);
 			cout << "Timer stop" << endl << endl;
 			timeval_subtract(&tvDIFF, &tvEnd, &tvStart);
