@@ -66,7 +66,11 @@ int main()
 		cout << "Delete: ";
 		for (i = 0; i < TEST_ITERATIONS; i++){
 			cout << values[i] << ' ';
-			tree->remove(values[i]);
+			tree->remove(values[i]) << ' '<< endl;
+			tree->debug();
+			tree->get_left()->debug();
+			tree->get_middle()->debug();
+			tree->get_right()->debug();
 		} cout << endl;
 
 		//tree->remove(300000);

@@ -98,8 +98,6 @@ bool Tri_Tree<T>::insert(const T &value)
 		// inserts into middle subtree if value is too large (larger than the values already in middle subtree)
 		if ((middle) && !((((middle->flags == 3) || (middle->flags == 1)) && (value < middle->value_a)) || ((middle->flags == 2) && (value < middle->value_b))))
 			return middle->insert(value);
-		
-		// if (!left && !middle) return (left = new Tri_Tree<T>(value));
 
 		// else set value_a to value
 		value_a = value;
@@ -118,8 +116,6 @@ bool Tri_Tree<T>::insert(const T &value)
 		// inserts into middle subtree if value is too small (smaller than the values already in middle subtree)
 		if ((middle) && !((((middle->flags == 3) || (middle->flags == 2)) && (value > middle->value_b)) || ((middle->flags == 2) && (value > middle->value_a))))
 			return middle->insert(value);
-		
-		// if (!right && !middle) return (right = new Tri_Tree<T>(value));
 
 		// else set value_b to value
 		value_b = value;
@@ -184,11 +180,7 @@ bool Tri_Tree<T>::remove(const T& value)
 {
 	// check if value is in this node, remove it if so
 	if ((flags & 1) && (value == value_a)) { flags &= 2; return true; }
-	if ((flags & 2) && (value == value_b)) { flags &= 1; return true; }
-	// if ((!left && !middle && !right) && (((flags & 1) && (value == value_a)) || ((flags & 2) && (value == value_b)))) { flags = 0; return true; }
-	// if ((flags & 1) && (value == value_a)) { repopulate(1); return true; }
-	// if ((flags & 2) && (value == value_b)) { repopulate(2); return true; }
-	
+	if ((flags & 2) && (value == value_b)) { flags &= 1; return true; }	
 	
 	// check if value is in left tree
 	if (left && left->find(value)) {
@@ -203,7 +195,7 @@ bool Tri_Tree<T>::remove(const T& value)
 				return true;
 			}
 			// otherwise remove value and repopulate the spot
-			left->flags &= 1;
+			left->flags &= 2;
 			return true;
 		}
 		// value_b
@@ -222,9 +214,12 @@ bool Tri_Tree<T>::remove(const T& value)
 		}
 
 		// if value is not in this node, check subtrees
-		if (left->left && left->left->find(value)) return left->left->remove(value);
-		if (left->middle && left->middle->find(value)) return left->middle->remove(value);
-		if (left->right && left->right->find(value)) return left->right->remove(value);
+		if (left->left && left->left->find(value))
+			return left->left->remove(value);
+		if (left->middle && left->middle->find(value))
+			return left->middle->remove(value);
+		if (left->right && left->right->find(value))
+			return left->right->remove(value);
 
 	// check if value is in middle tree
 	} else if (middle && middle->find(value)) {
@@ -258,9 +253,12 @@ bool Tri_Tree<T>::remove(const T& value)
 		}
 
 		// if value is not in this node, check subtrees
-		if (middle->left && middle->left->find(value)) return middle->left->remove(value);
-		if (middle->middle && middle->middle->find(value)) return middle->middle->remove(value);
-		if (middle->right && middle->right->find(value)) return middle->right->remove(value);
+		if (middle->left && middle->left->find(value))
+			return middle->left->remove(value);
+		if (middle->middle && middle->middle->find(value))
+			return middle->middle->remove(value);
+		if (middle->right && middle->right->find(value))
+			return middle->right->remove(value);
 
 	// check if value is in right tree
 	} else if (right && right->find(value)) {
@@ -294,63 +292,15 @@ bool Tri_Tree<T>::remove(const T& value)
 		}
 
 		// if value is not in this node, check subtrees
-		if (right->left && right->left->find(value)) return right->left->remove(value);
-		if (right->middle && right->middle->find(value)) return right->middle->remove(value);
-		if (right->right && right->right->find(value)) return right->right->remove(value);
+		if (right->left && right->left->find(value))
+			return right->left->remove(value);
+		if (right->middle && right->middle->find(value))
+			return right->middle->remove(value);
+		if (right->right && right->right->find(value))
+			return right->right->remove(value);
 		
 	// nothing is removed
 	} else return false;
-}
-
-// Repopulates after the last value is removed
-template <class T>
-void Tri_Tree<T>::repopulate(unsigned char remove_flag)
-{
-	// if value_a was removed and that space needs to be repopulated
-	if (remove_flag == 1) {
-		flags = 1;
-		if (left && (left->flags & 2)) {
-			value_a = left->value_b;
-			left->remove(value_a);
-		} else if (left && (left->flags & 1)) {
-			value_a = left->value_a;
-			left->remove(value_a);
-		} else if (middle && (middle->flags & 1)) {
-			value_a = middle->value_a;
-			middle->remove(value_a);
-		} else if (middle && (middle->flags & 2)) {
-			value_a = middle->value_b;
-			middle->remove(value_a);
-		} else if (right && (right->flags & 1)) {
-			value_a = right->value_a;
-			right->remove(value_a);
-		} else {
-			value_a = right->value_b;
-			right->remove(value_a);
-		}
-	// if value_b was removed and that space needs to be repopulated
-	} else {
-		flags = 2;
-		if (right && (right->flags & 1)) {
-			value_b = right->value_a;
-			right->remove(value_b);
-		} else if (right && (right->flags & 2)) {
-			value_b = right->value_b;
-			right->remove(value_b);
-		} else if (middle && (middle->flags & 2)) {
-			value_b = middle->value_b;
-			middle->remove(value_b);
-		} else if (middle && (middle->flags & 1)) {
-			value_b = middle->value_a;
-			middle->remove(value_b);
-		} else if (right && (right->flags & 2)) {
-			value_b = right->value_b;
-			right->remove(value_b);
-		} else {
-			value_b = right->value_a;
-			right->remove(value_b);
-		}
-	}
 }
 
 // Prints out this tree

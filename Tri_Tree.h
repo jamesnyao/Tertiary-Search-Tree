@@ -87,9 +87,6 @@ class Tri_Tree
 		// Checks if any value in a tree is present in this tree
 		bool check_if_repeat(Tri_Tree<T>* tree) const;
 
-		// Moves tree values to fill a removed value
-		void repopulate(unsigned char remove_flag);
-
 		// Helper to print out values of this tree
 		void display_helper() const;
 };
