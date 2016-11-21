@@ -170,9 +170,9 @@ bool Tri_Tree<T>::remove(const T& value)
 	// value_a
 	if ((flags & 1) && (value == value_a)) {
 		// if both value_a and value_b are valid
-		if (flags & 2) { flags = 0; return true; } 
+		if (flags & 2) { flags = 2; return true; }
 		// if only value_a is valid and there are no subtrees
-		if (!left && !middle && !right) delete this;
+		if (!left && !middle && !right) { delete this; return true; }
 		// otherwise remove value and repopulate the spot
 		repopulate(1);
 		return true;
@@ -180,9 +180,9 @@ bool Tri_Tree<T>::remove(const T& value)
 	// value_b
 	if ((flags & 2) && (value == value_b)) {
 		// if both value_a and value_b are valid
-		if (flags & 1) { flags = 0; return true; }
+		if (flags & 1) { flags = 1; return true; }
 		// if only value_a is valid and there are no subtrees
-		if (!left && !middle && !right) delete this;
+		if (!left && !middle && !right) { delete this; return true; }
 		// otherwise remove value and repopulate the spot
 		repopulate(2);
 		return true;
@@ -214,21 +214,49 @@ bool Tri_Tree<T>::remove(const T& value)
 template <class T>
 void Tri_Tree<T>::repopulate(unsigned char remove_flag)
 {
+	// if value_a was removed and that space needs to be repopulated
 	if (remove_flag == 1) {
-		if (!left) flags &= 2;
-		else if (left->flags & 2) {
+		flags = 1;
+		if (left && (left->flags & 2)) {
 			value_a = left->value_b;
-			flags |= 1;
-			left->flags &= 1;
-			left->repopulate(2);
+			left->remove(value_a);
+		} else if (left && (left->flags & 1)) {
+			value_a = left->value_a;
+			left->remove(value_a);
+		} else if (middle && (middle->flags & 1)) {
+			value_a = middle->value_a;
+			middle->remove(value_a);
+		} else if (middle && (middle->flags & 2)) {
+			value_a = middle->value_b;
+			middle->remove(value_a);
+		} else if (right && (right->flags & 1)) {
+			value_a = right->value_a;
+			right->remove(value_a);
+		} else {
+			value_a = right->value_b;
+			right->remove(value_a);
 		}
-	} else if (remove_flag == 2) {
-		if (!right) flags &= 1;
-		else if (right->flags & 1) {
+	// if value_b was removed and that space needs to be repopulated
+	} else {
+		flags = 2;
+		if (right && (right->flags & 1)) {
 			value_b = right->value_a;
-			flags |= 2;
-			right->flags &= 2;
-			right->repopulate(1);
+			right->remove(value_b);
+		} else if (right && (right->flags & 2)) {
+			value_b = right->value_b;
+			right->remove(value_b);
+		} else if (middle && (middle->flags & 2)) {
+			value_b = middle->value_b;
+			middle->remove(value_b);
+		} else if (middle && (middle->flags & 1)) {
+			value_b = middle->value_a;
+			middle->remove(value_b);
+		} else if (right && (right->flags & 2)) {
+			value_b = right->value_b;
+			right->remove(value_b);
+		} else {
+			value_b = right->value_a;
+			right->remove(value_b);
 		}
 	}
 }
