@@ -75,8 +75,8 @@ bool Tri_Tree<T>::insert(const T &value)
 	
 	// Case were either value_a or value_b is empty
 	// value_a
-	if (!(flags & 1) && (flags & 2)) {
-		if (value > value_b) return right->insert(value);
+	if ((flags & 3) == 2) {
+		if ((right) && (value > value_b)) return right->insert(value);
 		
 		// Check if value falls between the values in left and middle subtrees
 		// inserts into left subtree if value is too small (smaller than the values already in left subtree)
@@ -92,8 +92,8 @@ bool Tri_Tree<T>::insert(const T &value)
 		return true;
 	}
 	// value_b
-	if (!(flags & 2) && (flags & 1)) {
-		if (value < value_a) return left->insert(value);
+	if ((flags & 2) == 1) {
+		if ((left) && (value < value_a)) return left->insert(value);
 		
 		// Check if value falls between the values in right and middle subtrees
 		// inserts into right subtree if value is too large (larger than the values already in right subtree)
@@ -115,20 +115,20 @@ bool Tri_Tree<T>::insert(const T &value)
 		if (!left) {
 			left = new Tri_Tree<T>(value);
 			return true;
-		} left->insert(value); // inserts if left node exists
+		} return left->insert(value);
 	}
 	// right
 	if (value > value_b) {
 		if (!right) {
 			right = new Tri_Tree<T>(value);
 			return true;
-		} right->insert(value); // inserts if right node exists
+		} return right->insert(value);
 	}
 	// middle
 	if (!middle) {
 		middle = new Tri_Tree<T>(value);
 		return true;
-	} middle->insert(value); // inserts if middle node exists
+	} return middle->insert(value);
 }
 
 // Combine the values of a tree into this tree
