@@ -28,7 +28,11 @@ int main()
 	srand(time(0));
 	// Testing with integers (balanced tree)
 	{
+<<<<<<< HEAD
+	cout << "Testing " << TEST_ITERATIONS << " integers (TST balanced tree):" << endl << endl;
+=======
 		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
+>>>>>>> 23e2e0b4fedf1c8d554880b3c0d06f8b0bfe1aa4
 
 		// Start timer
 		gettimeofday(&tvStart, NULL);
@@ -48,6 +52,22 @@ int main()
 		timeval_print ("This took: ", &tvDIFF);
 
 		cout << "--------------------------------" << endl;
+
+	// TESTING REMOVE
+		{
+			cout << "Testing " << TEST_ITERATIONS/2 << " removals (TST balanced tree):" << endl << endl;
+			gettimeofday(&tvStart, NULL);
+			cout << "Timer start" << endl << endl;
+			for(int i = 0; i < TEST_ITERATIONS/2; i++){
+				tree->remove(rand() % 1000000);
+			}
+			if(PRINT_TREES) tree->display();
+			gettimeofday(&tvEnd, NULL);
+			cout << "Timer stop" << endl << endl;
+			timeval_subtract(&tvDIFF, &tvEnd, &tvStart);
+			timeval_print("This took: ", &tvDIFF);
+			cout << "--------------------------------" << endl;
+		}
 	}
 
 	// Testing with integers (unbalanced tree)
@@ -73,7 +93,11 @@ int main()
 
 		cout << "--------------------------------" << endl;
 	}
+<<<<<<< HEAD
+	// Testing with integers (balanced tree BST)
+=======
 	// Testing with integers (balanced tree)
+>>>>>>> 23e2e0b4fedf1c8d554880b3c0d06f8b0bfe1aa4
 	{
 		cout << "Testing " << TEST_ITERATIONS << " integers (balanced tree):" << endl << endl;
 
