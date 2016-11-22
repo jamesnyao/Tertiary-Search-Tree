@@ -79,7 +79,7 @@ int main()
 
 
 	// Testing with integers (TST unbalanced tree)
-	{
+/*	{
 		cout << "Testing " << TEST_ITERATIONS << " inserting integers (TST unbalanced tree):" << endl << endl;
 
 		// Start timer
@@ -123,10 +123,11 @@ int main()
 		timeval_print ("This took: ", &tvDIFF);
 
 		cout << "--------------------------------" << endl;
-	}
+	}	*/
 
 	// Testing with integers (balanced tree BST)
 	{
+		int values[TEST_ITERATIONS];
 		cout << "Testing " << TEST_ITERATIONS << " inserting integers (BST balanced tree):" << endl << endl;
 
 		// Start timer
@@ -135,7 +136,10 @@ int main()
 
 		// Make tree
 		BST<int> *tree = new BST<int>(500000);
-		for (unsigned int i = 0; i < TEST_ITERATIONS; i++) tree->insert(rand() % 1000000);
+		for (unsigned int i = 0; i < TEST_ITERATIONS; i++) {
+			values[i] = rand() % 1000000;
+			tree->insert(values[i]);
+		}
 
 		if (PRINT_TREES) tree->display();
 
@@ -147,10 +151,30 @@ int main()
 		timeval_print ("This took: ", &tvDIFF);
 
 		cout << "--------------------------------" << endl;
+
+		// TESTING REMOVE
+		cout << "Testing " << TEST_ITERATIONS << " removals (BST balanced tree):" << endl << endl;
+		gettimeofday(&tvStart, NULL);
+		cout << "Timer start" << endl << endl;
+
+		if (PRINT_TREES) tree->display();
+
+		cout << "Removing values ... ";
+		for (i = 0; i < TEST_ITERATIONS; i++){
+			tree->remove(values[i]);
+		} cout << endl << endl;
+
+		if (PRINT_TREES) tree->display();
+
+		gettimeofday(&tvEnd, NULL);
+		cout << "Timer stop" << endl << endl;
+		timeval_subtract(&tvDIFF, &tvEnd, &tvStart);
+		timeval_print("This took: ", &tvDIFF);
+		cout << "--------------------------------" << endl;
 	}
 
 	// Testing with integers (unbalanced tree)
-	{
+/*	{
 		cout << "Testing " << TEST_ITERATIONS << " inserting integers (BST unbalanced tree):" << endl << endl;
 
 		// Start timer
@@ -171,7 +195,7 @@ int main()
 		timeval_print ("This took: ", &tvDIFF);
 
 		cout << "--------------------------------" << endl;
-	}
+	}	*/
 	return 0;
 }
 

@@ -91,7 +91,8 @@ void BinarySearchTree<T>::repopulate()
 	if (left) {
 		content = left->content;
 		left->repopulate();
-	} else {
+	}
+	if (right) {
 		content = right->content;
 		right->repopulate();
 	}
