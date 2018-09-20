@@ -1,5 +1,3 @@
 # Tri_Tree
-for program2
+Tertiary Search Tree implementation and testing of performance.
 
-Test functionality please.
-All the code should be working; time for bug fixes!!!
